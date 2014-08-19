@@ -3,7 +3,41 @@
 #include <stdint.h>
 #include <string.h>
 
+/*
+ *Y'= 0.299 x R + 0.587 x G + 0.144 x B
+ *U = -0.147 x R - 0.289 x G + 0.436 x B
+ *V = 0.615 x R - 0.515 x G - 0.100 x B
+ */
+
 /*Make 3color image,Frame Image*/
+
+static void FillImage444(uint8_t *image, int width, int height)
+{
+    uint8_t *pY = (uint8_t *)(image);
+    int y = 0;
+
+    /*Red*/
+    for (y = 0; y < width * height / 3; y++) {
+        *pY++ = 0x52;   //Y
+        *pY++ = 0x5b;   //U
+        *pY++ = 0xf0;   //V
+    }
+    /*Green*/
+    for( y = 0; y < width * height / 3; y++)
+    {
+        *pY++ = 0x91;   //Y
+        *pY++ = 0x23;   //U
+        *pY++ = 0x37;   //V
+    }
+    /*Blue*/
+    for( y = 0; y < height * width / 3; y++)
+    {
+        *pY++ = 0x29;   //Y
+        *pY++ = 0xf0;   //U
+        *pY++ = 0x6f;   //V
+    }
+}
+
 static void _FillImage420(unsigned char *image,int width,int height)
 {
     uint8_t *pY = (uint8_t *)(image);
@@ -212,9 +246,12 @@ static void FillImage422(unsigned char *image,int width,int height)
     }
 }
 
-#define CONST_WIDTH 320
-#define CONST_HEIGHT 240
-#define CONST_SIZE  (int)(CONST_WIDTH*CONST_HEIGHT*2) //1.5)
+/*#define CONST_WIDTH 250*/
+/*#define CONST_HEIGHT 200*/
+#define CONST_WIDTH 640
+#define CONST_HEIGHT 480
+/*#define CONST_SIZE  (int)(CONST_WIDTH*CONST_HEIGHT*2) //YUV422*/
+#define CONST_SIZE  (int)(CONST_WIDTH*CONST_HEIGHT*3) //YUV444
 
 int main(int argc, char** argv)
 {
@@ -222,7 +259,8 @@ int main(int argc, char** argv)
 
     uint8_t buffer[CONST_SIZE];
 
-    FillImage422(buffer, CONST_WIDTH, CONST_HEIGHT);
+    /*FillImage422(buffer, CONST_WIDTH, CONST_HEIGHT);*/
+    FillImage444(buffer, CONST_WIDTH, CONST_HEIGHT);
     fwrite(buffer, sizeof(buffer), 1, fp);
     fclose(fp);
 
