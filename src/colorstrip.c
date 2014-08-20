@@ -42,13 +42,12 @@ static void _FillImage420(unsigned char *image,int width,int height)
 {
     uint8_t *pY = (uint8_t *)(image);
     uint8_t *pU = (uint8_t *)(image + width * height);
-    //uint8_t *pV = (uint8_t *)(image + width * height * 5/4);
-    uint8_t *pV = (uint8_t *)(image + width * height);
+    uint8_t *pV = (uint8_t *)(image + width * height * 5/4);
 
     int y,x;
 
     /*Red*/
-    memset(pY, 0xff, width*height/4);
+    memset(pY, 0x52, width*height/4);
     memset(pU, 0x5b, width*height/16);
     memset(pV, 0xf0, width*height/16);
 
@@ -246,12 +245,11 @@ static void FillImage422(unsigned char *image,int width,int height)
     }
 }
 
-/*#define CONST_WIDTH 250*/
-/*#define CONST_HEIGHT 200*/
 #define CONST_WIDTH 640
 #define CONST_HEIGHT 480
 /*#define CONST_SIZE  (int)(CONST_WIDTH*CONST_HEIGHT*2) //YUV422*/
-#define CONST_SIZE  (int)(CONST_WIDTH*CONST_HEIGHT*3) //YUV444
+/*#define CONST_SIZE  (int)(CONST_WIDTH*CONST_HEIGHT*3) //YUV444*/
+#define CONST_SIZE  (int)(CONST_WIDTH*CONST_HEIGHT*3/2) //YUV420
 
 int main(int argc, char** argv)
 {
@@ -260,7 +258,10 @@ int main(int argc, char** argv)
     uint8_t buffer[CONST_SIZE];
 
     /*FillImage422(buffer, CONST_WIDTH, CONST_HEIGHT);*/
-    FillImage444(buffer, CONST_WIDTH, CONST_HEIGHT);
+    /*FillImage444(buffer, CONST_WIDTH, CONST_HEIGHT);*/
+    /*FillImage420(buffer, CONST_WIDTH, CONST_HEIGHT);*/
+    /*FillImage420_(buffer, CONST_WIDTH, CONST_HEIGHT);*/
+    _FillImage420(buffer, CONST_WIDTH, CONST_HEIGHT);
     fwrite(buffer, sizeof(buffer), 1, fp);
     fclose(fp);
 
